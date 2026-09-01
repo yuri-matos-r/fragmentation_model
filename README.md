@@ -1,0 +1,1 @@
+This project aims to understand how habitat fragmentation can affect species reproductive behaviour. To reach our goals we chose to create a Individual Based Model (IBM) all the codes are in the folder "codes"
