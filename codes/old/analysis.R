@@ -1,45 +1,37 @@
-install.packages("raster")  # Para manipulação de dados espaciais
-install.packages("ggplot2") # Para visualização
-install.packages("dplyr")   # Para manipulação de dados
-
 library(raster)
 library(ggplot2)
 library(dplyr)
 
 # Definir o tamanho do grid
-n_rows <- 10
-n_cols <- 10
+n_rows = 10
+n_cols = 10
 
 # Número de indivíduos
-n_individuals <- 10
+n_individuals = 10
 
 # Criar um grid vazio
-environment_grid <- matrix(0, nrow = n_rows, ncol = n_cols)
+environment_grid = matrix(0, nrow = n_rows, ncol = n_cols)
 ?matrix
 
 # Visualizar o grid
 image(environment_grid, col = terrain.colors(10))
 
-?matrix
-?environment_grid
-?image
-?sample
 
 # Criar um dataframe a partir da matriz environment_grid
-grid_df <- expand.grid(x = 1:n_cols, y = 1:n_rows)
-grid_df$value <- as.vector(environment_grid)  # Transformar a matriz em um vetor
+#expand grid cria um dataframe de todos as combinações entre os vetores
+grid_df = expand.grid(x = 1:n_cols, y = 1:n_rows)
+grid_df$value = as.vector(environment_grid)  # Transformar a matriz em um vetor
 
 
 
 
 # Posições aleatórias no grid
-individuals <- data.frame(
+individuals = data.frame(
   id = 1:n_individuals,
-  x = sample(1:n_cols, n_individuals, replace = TRUE),
-  y = sample(1:n_rows, n_individuals, replace = TRUE)
+  x = sample(1:n_cols, n_individuals, replace = T),
+  y = sample(1:n_rows, n_individuals, replace = T)
 )
 
-?geom_tile
 
 
 ggplot() +
@@ -50,23 +42,24 @@ ggplot() +
   labs(title = "Ambiente Espacial", x = "Coluna", y = "Linha")
 
 # Função para mover indivíduos
-move_individuals <- function(individuals, n_rows, n_cols) {
-  individuals <- individuals %>%
+move_individuals = function(individuals, n_rows, n_cols) {
+  individuals = individuals %>%
     mutate(
       x = x + sample(-1:1, n(), replace = TRUE),
       y = y + sample(-1:1, n(), replace = TRUE)
     )
   
   # Garantir que os indivíduos permaneçam dentro do grid
-  individuals$x <- pmin(pmax(individuals$x, 1), n_cols)
-  individuals$y <- pmin(pmax(individuals$y, 1), n_rows)
+  individuals$x = pmin(pmax(individuals$x, 1), n_cols)
+  individuals$y = pmin(pmax(individuals$y, 1), n_rows)
   
   return(individuals)
 }
 
+?function
 
 # Número de passos de tempo
-n_steps <- 20
+n_steps = 20
 
 # Loop de simulação
 for (step in 1:n_steps) {
