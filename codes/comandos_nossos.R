@@ -51,18 +51,18 @@ individuals$initial.y=individuals$y
 #individuals$y=ifelse(individuals$y<1, 1, individuals$y)
 #individuals$y=ifelse(individuals$y>nrow(individuals), nrow(individuals), individuals$y)
 
-position=function(position.x, position.y, n){
+position=function(position.x, position.y, n, grid){
   new.x=position.x+sample(-1:1, n, replace=T)
   new.y=position.y+sample(-1:1, n, replace=T)
   new.x=ifelse(new.x<1, 1, new.x)
-  new.x=ifelse(new.x>n, n, new.x)
+  new.x=ifelse(new.x>max(grid[,1]), max(grid[,1]), new.x)
   new.y=ifelse(new.y<1, 1, new.y)
-  new.y=ifelse(new.y>n, n, new.y)
+  new.y=ifelse(new.y>max(grid[,2]), max(grid[,2]), new.y)
   return(data.frame(x = new.x, y = new.y))
 }
 
 
-resultado = position(individuals$x, individuals$y, n = nrow(individuals))
+resultado = position(individuals$x, individuals$y, n = nrow(individuals), grid=grid_df)
 individuals$x = resultado$x
 individuals$y = resultado$y
 
@@ -82,7 +82,7 @@ frag.prob=0.2
 grid_df$prob.frag=rbinom(nrow(grid_df), 1, frag.prob)
 
 for(i in 1:nrow(grid_df)){
-if(grid_df$prob.frag[i]==1) {grid_df$hab[i]='m'
+if(grid_df$prob.frag[i]==1) {grid_df$hab[i]='m' #m de matriz
 } else {grid_df$hab[i]}
 }
 
