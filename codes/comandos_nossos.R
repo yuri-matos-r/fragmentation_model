@@ -78,7 +78,7 @@ ggplot() +
 
 grid_df$hab=c('f')
 
-frag.prob=0.2
+frag.prob=0.1
 grid_df$prob.frag=rbinom(nrow(grid_df), 1, frag.prob)
 
 for(i in 1:nrow(grid_df)){
@@ -93,3 +93,36 @@ ggplot() +
   theme_minimal() +
   labs(title = "Ambiente Espacial", x = "Coluna", y = "Linha")
 
+
+for(i in 1:nrow(individuals)){
+individuals$point[i]=grid_df$hab[which(grid_df$x==individuals$x[i] & grid_df$y==individuals$y[i])]
+}
+
+surround=c()
+for(i in 1:nrow(individuals)){
+surround[i]=grid_df$hab[which(grid_df$x==individuals$x[i] & grid_df$y==individuals$y[i])]
+}
+
+neighborhood = expand.grid(x = -1:1, y = -1:1)
+
+surround = matrix(NA, nrow = n_individuals, ncol = nrow(neighborhood))
+
+for (i in 1:n_individuals) {#o primeiro loop roda seguindo a ordem dos individuos
+  for (k in 1:nrow(deltas)) {#o segundo loop roda adicionando -1, 0 ou 1 da posicao
+    x = individuals$x[i] + neighborhood$x[k]#nova posicao no x
+    y = individuals$y[i] + neighborhood$y[k]#nova posicao no y
+    if(x > max(grid_df$x)| y > max(grid_df$y)){
+      val='m'} else 
+        if(x < min(grid_df$x)| y < min(grid_df$y)) {
+          val='m'} else {
+            val = grid_df$hab[grid_df$x == x & grid_df$y == y]}
+    surround[i, k] = val #o loop final coloca m na vizinhanca que for borda. No data frame produzido ao final, a coluna 5 de surround tem a posicao que o individuo ta localizado
+  }
+}
+
+
+for (i in 1:n_individuals) {
+individuals$movement[i]=if(all(surround[i,-5]=='f') & surround[i,5]=='m') {'stay'} else {'move'}
+}
+
+#Paramos na parte em que definimos se cada indivíduo fica ou move por estar ou não em uma mancha adequada cercada por mata. Próximo passo é fazer eles se moverem e quando um encontrar outri na mancha, brigar
